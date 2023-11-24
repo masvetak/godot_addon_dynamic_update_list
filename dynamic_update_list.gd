@@ -1,9 +1,9 @@
-class_name DynamicUpdateList extends ScrollContainer
+class_name DynamicUpdateList extends Control
 
 signal selected(data: Dictionary)
 
 @export var max_items_per_page: int = 20
-@export var columns: int = 1
+@export_range(1, 2) var columns: int = 1
 @export var item_scene_reource: Resource
 @export var item_name_key: String = ""
 @export var sort_enabled: bool = true
@@ -22,6 +22,7 @@ var _page_number: int = 1
 var _page_number_max: int = 1
 var _page_size_y: int = 0
 
+@onready var _scroll: ScrollContainer = %ScrollContainer
 @onready var _list: GridContainer = %List
 
 # ------------------------------------------------------------------------------
@@ -33,8 +34,8 @@ func _ready() -> void:
 	_list.columns = columns
 
 func _process(_delta) -> void:
-	if _list_scroll_vertical_value != self.scroll_vertical:
-		_list_scroll_vertical_value = self.scroll_vertical
+	if _list_scroll_vertical_value != _scroll.scroll_vertical:
+		_list_scroll_vertical_value = _scroll.scroll_vertical
 		if _page_number == _page_number_max: return
 		if _list_scroll_vertical_value > int(float(_list_size_y) - float(_page_size_y)):
 			if _page_size_y == 0 and _list.get_child_count() > 0:
