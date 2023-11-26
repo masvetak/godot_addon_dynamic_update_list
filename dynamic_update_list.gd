@@ -11,6 +11,9 @@ signal selected(data: Dictionary)
 @export var search_enabled: bool = true
 @export var search_key: String = ""
 
+var _scroll: ScrollContainer = null
+var _list: GridContainer = null
+
 var _max_items_per_page: int = 0
 
 var _list_items: Array = []
@@ -22,14 +25,24 @@ var _page_number: int = 1
 var _page_number_max: int = 1
 var _page_size_y: int = 0
 
-@onready var _scroll: ScrollContainer = %ScrollContainer
-@onready var _list: GridContainer = %List
-
 # ------------------------------------------------------------------------------
 # Build-in methods
 # ------------------------------------------------------------------------------
 
 func _ready() -> void:
+	_scroll = ScrollContainer.new()
+	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_scroll.scroll_deadzone = 64
+	_scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
+	self.add_child(_scroll)
+	
+	_list = GridContainer.new()
+	_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_list.set("theme_override_constants/h_separation", 16)
+	_list.set("theme_override_constants/v_separation", 16)
+	_scroll.add_child(_list)
+	
 	_max_items_per_page = max_items_per_page
 	_list.columns = columns
 
