@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://bidm2ava06eob"]
+[gd_scene load_steps=2 format=3 uid="uid://dnkdc8f7ynywf"]
 
 [ext_resource type="Script" path="res://addons/godot_addon_dynamic_update_list/dynamic_update_list.gd" id="1_2njae"]
 
