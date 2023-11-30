@@ -108,7 +108,9 @@ func _draw_items() -> void:
 	for idx in range(from_idx, to_idx):
 		var item_data = _list_items_to_draw[idx]
 		var list_item = item_scene_reource.instantiate()
-		list_item.name = str(item_data[item_name_key])
+		var item_name = item_data.get(item_name_key)
+		if item_data != null:
+			list_item.name = str(item_name)
 		list_item.data = item_data
 		list_item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		list_item.selected.connect(_on_list_item_selected)
@@ -121,6 +123,7 @@ func _sort_by_key(a, b) -> bool:
 	return false
 
 func _filter_by_key(text: String) -> void:
+	if not search_enabled: return
 	var search_text_list: Array = text.strip_edges().split(" ")
 	if text.is_empty():
 		_load_items(_list_items)
