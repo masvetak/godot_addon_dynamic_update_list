@@ -1,5 +1,7 @@
 class_name DynamicUpdateList extends Control
 
+enum SortOrder { ASCENDING, DESCENDIN }
+
 signal selected(data: Dictionary)
 
 @export var max_items_per_page: int = 20
@@ -7,6 +9,7 @@ signal selected(data: Dictionary)
 @export var item_scene_reource: Resource
 @export var item_name_key: String = ""
 @export var sort_enabled: bool = true
+@export var sort_order: SortOrder = SortOrder.ASCENDING
 @export var sort_key: String = ""
 @export var search_enabled: bool = true
 @export var search_key: String = ""
@@ -82,7 +85,12 @@ func _load_items(items: Array) -> void:
 	_remove_items()
 	_list_items_to_draw = items.duplicate()
 	
-	if sort_enabled: _list_items_to_draw.sort_custom(_sort_by_key)
+	if sort_enabled: 
+		match sort_order:
+			SortOrder.ASCENDING:
+				_list_items_to_draw.sort_custom(_sort_by_key_ascending)
+			SortOrder.DESCENDIN:
+				_list_items_to_draw.sort_custom(_sort_by_key_descending)
 	
 	_list_scroll_vertical_value = 0
 	_list_size_y = 0
@@ -117,8 +125,13 @@ func _draw_items() -> void:
 		
 		_list.add_child(list_item)
 
-func _sort_by_key(a, b) -> bool:
+func _sort_by_key_ascending(a, b) -> bool:
 	if a[sort_key] < b[sort_key]:
+		return true
+	return false
+
+func _sort_by_key_descending(a, b) -> bool:
+	if a[sort_key] > b[sort_key]:
 		return true
 	return false
 
