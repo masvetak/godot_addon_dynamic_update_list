@@ -6,6 +6,7 @@ signal selected(data: Dictionary)
 
 @export var max_items_per_page: int = 20
 @export_range(1, 2) var columns: int = 1
+@export var vertical_scroll_mode: ScrollContainer.ScrollMode = ScrollContainer.SCROLL_MODE_DISABLED
 @export var item_scene_reource: Resource
 @export var item_name_key: String = ""
 @export var sort_enabled: bool = true
@@ -35,6 +36,7 @@ var _page_size_y: int = 0
 func _ready() -> void:
 	_scroll = ScrollContainer.new()
 	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_scroll.vertical_scroll_mode = vertical_scroll_mode
 	_scroll.scroll_deadzone = 64
 	_scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
 	self.add_child(_scroll)
