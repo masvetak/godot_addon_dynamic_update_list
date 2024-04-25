@@ -1,6 +1,7 @@
 class_name DynamicUpdateList extends Control
 
 enum SortOrder { ASCENDING, DESCENDIN }
+enum SearchType { CONTAINS, BEGINS_WITH }
 
 signal selected(data: Dictionary)
 
@@ -13,6 +14,7 @@ signal selected(data: Dictionary)
 @export var sort_order: SortOrder = SortOrder.ASCENDING
 @export var sort_key: String = ""
 @export var search_enabled: bool = true
+@export var search_type: SearchType = SearchType.CONTAINS
 @export var search_key: String = ""
 
 var _scroll: ScrollContainer = null
@@ -77,7 +79,11 @@ func remove_items() -> void:
 	_remove_items()
 
 func filter_items(text: String) -> void:
-	_filter_by_key(text)
+	match search_type:
+		SearchType.CONTAINS:
+			_filter_by_key_with_contains(text)
+		SearchType.BEGINS_WITH:
+			_filter_by_key_with_begins_with(text)
 
 # ------------------------------------------------------------------------------
 # Private methods
@@ -137,7 +143,7 @@ func _sort_by_key_descending(a, b) -> bool:
 		return true
 	return false
 
-func _filter_by_key(text: String) -> void:
+func _filter_by_key_with_contains(text: String) -> void:
 	if not search_enabled: return
 	var search_text_list: Array = text.strip_edges().split(" ")
 	if text.is_empty():
@@ -148,6 +154,32 @@ func _filter_by_key(text: String) -> void:
 			var found_match: bool = true
 			for search_text in search_text_list:
 				if not item[search_key].to_lower().contains(search_text.to_lower()):
+					found_match = false
+					continue
+			if found_match:
+				filtered_list.append(item)
+		_load_items(filtered_list)
+
+func _filter_by_key_with_begins_with(text: String) -> void:
+	if not search_enabled: return
+	var search_text_list: Array = text.strip_edges().split(" ")
+	if text.is_empty():
+		_load_items(_list_items)
+	else:
+		var filtered_list: Array = []
+		for item in _list_items:
+			var found_match: bool = true
+			for search_text in search_text_list:
+				var item_text: String = item[search_key].to_lower()
+				var item_text_words: Array = item_text.split(' ')
+				var found_match_in_text: bool = false
+				for item_text_word in item_text_words:
+					if item_text_word.begins_with(search_text.to_lower()):
+						found_match_in_text = true
+						continue
+				if found_match_in_text: 
+					found_match = true
+				else:
 					found_match = false
 					continue
 			if found_match:
