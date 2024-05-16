@@ -132,6 +132,13 @@ func _draw_items() -> void:
 		list_item.selected.connect(_on_list_item_selected)
 		
 		_list.add_child(list_item)
+	
+	# Add hiden item for grid size workaround
+	if _list_items_to_draw.size() == 1:
+		var list_item = item_scene_reource.instantiate()
+		list_item.modulate.a = 0.0
+		list_item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		_list.add_child(list_item)
 
 func _sort_by_key_ascending(a, b) -> bool:
 	if a[sort_key] < b[sort_key]:
