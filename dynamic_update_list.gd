@@ -181,7 +181,7 @@ func _filter_by_key_with_begins_with(text: String) -> void:
 					found_match = true
 				else:
 					found_match = false
-					continue
+					break
 			if found_match:
 				filtered_list.append(item)
 		_load_items(filtered_list)
