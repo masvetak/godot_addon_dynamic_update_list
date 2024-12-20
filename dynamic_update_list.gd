@@ -16,6 +16,7 @@ signal selected(data: Dictionary)
 @export var search_enabled: bool = true
 @export var search_type: SearchType = SearchType.CONTAINS
 @export var search_key: String = ""
+@export var custom_theme: Theme = null
 
 var _scroll: ScrollContainer = null
 var _list: GridContainer = null
@@ -37,6 +38,7 @@ var _page_size_y: int = 0
 
 func _ready() -> void:
 	_scroll = ScrollContainer.new()
+	_scroll.theme = custom_theme
 	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_scroll.vertical_scroll_mode = vertical_scroll_mode
 	_scroll.scroll_deadzone = 64
