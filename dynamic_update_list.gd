@@ -46,6 +46,7 @@ func _ready() -> void:
 	_list = GridContainer.new()
 	_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_list.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_list.set("theme_override_constants/h_separation", 16)
 	_list.set("theme_override_constants/v_separation", 16)
 	_scroll.add_child(_list)
