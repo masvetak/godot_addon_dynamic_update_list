@@ -144,12 +144,12 @@ func _draw_items() -> void:
 		_list.add_child(list_item)
 
 func _sort_by_key_ascending(a, b) -> bool:
-	if a[sort_key] < b[sort_key]:
+	if str(a[sort_key]).to_lower() < str(b[sort_key]).to_lower():
 		return true
 	return false
 
 func _sort_by_key_descending(a, b) -> bool:
-	if a[sort_key] > b[sort_key]:
+	if str(a[sort_key]).to_lower() > str(b[sort_key]).to_lower():
 		return true
 	return false
 
