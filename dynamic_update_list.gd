@@ -25,7 +25,6 @@ var _max_items_per_page: int = 0
 
 var _list_items: Array = []
 var _list_items_to_draw: Array = []
-var _list_scroll_vertical_value: int = 0
 var _list_size_y: int = 0
 
 var _page_number: int = 1
@@ -44,6 +43,7 @@ func _ready() -> void:
 	_scroll.scroll_deadzone = 64
 	_scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
 	self.add_child(_scroll)
+	_scroll.get_v_scroll_bar().value_changed.connect(_on_scroll_changed)
 	
 	_list = GridContainer.new()
 	_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -56,18 +56,16 @@ func _ready() -> void:
 	_max_items_per_page = max_items_per_page
 	_list.columns = columns
 
-func _process(_delta) -> void:
-	if _list_scroll_vertical_value != _scroll.scroll_vertical:
-		_list_scroll_vertical_value = _scroll.scroll_vertical
-		if _page_number == _page_number_max: return
-		if _list_scroll_vertical_value > int(float(_list_size_y) - float(_page_size_y)):
-			if _page_size_y == 0 and _list.get_child_count() > 0:
-				var list_item_size = _list.get_child(0).get("custom_minimum_size")
-				var list_item_sepration = _list.get("theme_override_constants/v_separation")
-				_page_size_y = ((list_item_size.y + list_item_sepration) * _max_items_per_page - list_item_sepration) / columns
-			_page_number = _page_number + 1
-			_list_size_y = _page_size_y * _page_number
-			_draw_items()
+func _on_scroll_changed(scroll_value: float) -> void:
+	if _page_number == _page_number_max: return
+	if scroll_value > float(_list_size_y - _page_size_y):
+		if _page_size_y == 0 and _list.get_child_count() > 0:
+			var list_item_size = _list.get_child(0).get("custom_minimum_size")
+			var list_item_sepration = _list.get("theme_override_constants/v_separation")
+			_page_size_y = ((list_item_size.y + list_item_sepration) * _max_items_per_page - list_item_sepration) / columns
+		_page_number += 1
+		_list_size_y = _page_size_y * _page_number
+		_draw_items()
 
 # ------------------------------------------------------------------------------
 # Public methods
@@ -103,7 +101,7 @@ func _load_items(items: Array) -> void:
 			SortOrder.DESCENDIN:
 				_list_items_to_draw.sort_custom(_sort_by_key_descending)
 	
-	_list_scroll_vertical_value = 0
+	_scroll.scroll_vertical = 0
 	_list_size_y = 0
 	
 	_page_size_y = 0
